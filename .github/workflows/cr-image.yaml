@@ -1,6 +1,6 @@
 name: Build Test Container Image
 on:
-  pull_request:
+  workflow_dispatch:
   push:
     branches:
       - "test"
