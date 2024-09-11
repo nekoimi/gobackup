@@ -1,0 +1,15 @@
+# test wxwork notify
+version: "3"
+services:
+  test:
+    image: ghcr.io/nekoimi/gobackup:test
+    container_name: test
+    hostname: test
+    ports:
+      - "2703:2703"
+    volumes:
+      - ${PWD}/tests/notifiers/wxwork.yml:/etc/gobackup/gobackup.yml
+      - ${PWD}/tests/backups:/backups
+    environment:
+      WXWORK_WEBHOOK_URL: ""
+    restart: always

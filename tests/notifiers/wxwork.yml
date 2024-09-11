@@ -1,0 +1,20 @@
+models:
+  test:
+    schedule:
+      cron: "* * * * *"
+    compress_with:
+      type: tgz
+    storages:
+      local:
+        type: local
+        keep: 10
+        path: /backups/
+    archives:
+      test:
+        includes:
+          - /etc/hosts
+    notifiers:
+      wxwork:
+        type: wxwork
+        url: $WXWORK_WEBHOOK_URL
+        on_success: true
