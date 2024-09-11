@@ -10,9 +10,8 @@ models:
         keep: 10
         path: /backups/
     archives:
-      test:
-        includes:
-          - /etc/hosts
+      includes:
+        - /etc/hosts
     notifiers:
       wxwork:
         type: wxwork

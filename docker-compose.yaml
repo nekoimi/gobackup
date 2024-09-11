@@ -11,5 +11,6 @@ services:
       - ${PWD}/tests/notifiers/wxwork.yml:/etc/gobackup/gobackup.yml
       - ${PWD}/tests/backups:/backups
     environment:
-      WXWORK_WEBHOOK_URL: ""
+      # 配置自己的企业微信机器人webhook地址
+      WXWORK_WEBHOOK_URL: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxx-xxxx-xxxx-xxxx"
     restart: always
