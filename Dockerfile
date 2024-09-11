@@ -1,3 +1,10 @@
+FROM node:18.20.4-alpine3.20 as web-builder
+
+WORKDIR /build
+COPY web .
+RUN npm install
+RUN npm run build
+
 FROM golang:1.21-alpine as builder
 
 ENV CGO_ENABLED=0
@@ -6,6 +13,7 @@ ENV GOARCH=amd64
 
 WORKDIR /build
 COPY . .
+COPY --from=web-builder /build/dist /build/web/dist
 RUN go install
 RUN go build -o gobackup main.go
 
