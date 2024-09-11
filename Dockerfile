@@ -1,3 +1,14 @@
+FROM golang:1.21-alpine as builder
+
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=amd64
+
+WORKDIR /build
+COPY . .
+RUN go install
+RUN go build -o gobackup main.go
+
 FROM alpine:latest
 ARG VERSION=latest
 RUN apk add \
@@ -73,8 +84,9 @@ RUN case "$(uname -m)" in \
     etcdctl version
 
 
+# Copy binary from builder
+COPY --from=builder /build/gobackup /usr/local/bin/gobackup
 
-ADD install /install
-RUN /install ${VERSION} && rm /install
+RUN mkdir -p ~/.gobackup
 
 CMD ["/usr/local/bin/gobackup", "run"]
