@@ -3,9 +3,7 @@ package database
 import (
 	"fmt"
 	"path"
-	"strings"
 
-	"github.com/google/shlex"
 	"github.com/spf13/viper"
 
 	"github.com/gobackup/gobackup/config"
@@ -51,27 +49,12 @@ func runHook(action, script string) error {
 		return nil
 	}
 	logger.Infof("Run %s", action)
-	ignoreError := strings.HasPrefix(script, "-")
-	script = strings.TrimPrefix(script, "-")
-	c, err := shlex.Split(script)
-	if err != nil {
-		if ignoreError {
-			logger.Infof("Skip %s with error: %v", action, err)
-		} else {
-			return err
-		}
-	} else {
-		if _, err := helper.Exec(c[0], c[1:]...); err != nil {
-			if ignoreError {
-				logger.Infof("Run %s failed: %v, ignore it", action, err)
-			} else {
-				return fmt.Errorf("Run %s failed: %v", action, err)
-			}
-		} else {
-			logger.Infof("Run %s succeeded", action)
-		}
+
+	if _, err := helper.ExecScriptWithStdio(script, true); err != nil {
+		return fmt.Errorf("Run %s failed: %v", action, err)
 	}
 
+	logger.Infof("Run %s succeeded", action)
 	return nil
 }
 
@@ -100,6 +83,8 @@ func runModel(model config.ModelConfig, dbConfig config.SubConfig) (err error) {
 		db = &InfluxDB2{Base: base}
 	case "etcd":
 		db = &Etcd{Base: base}
+	case "firebird":
+		db = &Firebird{Base: base}
 	default:
 		logger.Warn(fmt.Errorf("model: %s databases.%s config `type: %s`, but is not implement", model.Name, dbConfig.Name, dbConfig.Type))
 		return

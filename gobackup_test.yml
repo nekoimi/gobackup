@@ -12,6 +12,7 @@ models:
       # At 04:05 on Sunday.
       cron: "5 4 * * sun"
     compress_with:
+      filename_format: "2006.01.01.15.00.00"
       type: tgz
     encrypt_with:
       type: openssl
@@ -88,6 +89,9 @@ models:
         username: ubuntu
         password: password
         timeout: 300
+    archive:
+      includes:
+        - /etc/hosts
   test_model:
     compress_with:
       type: tgz
@@ -130,9 +134,13 @@ models:
       password: 123456
     notifiers:
     before_script: |
-      echo "before_script invoked."
+      echo before_script invoked.
+      ls -lh | wc -l
+      echo This is before_script second line.
     after_script: |
-      echo "after_script invoked."
+      echo after_script invoked.
+      ls -lh | wc -l
+      echo This is after_script second line.
     storages:
       local:
         type: local
